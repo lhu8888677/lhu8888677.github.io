@@ -2,252 +2,112 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#0066cc">
-  <link rel="manifest" href="manifest.json">
-  <link rel="icon" href="logo.png" type="image/png">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>土地複丈規費試算</title>
   <style>
-    body {
-      font-family: "Microsoft JhengHei", sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #f8f9fa;
-      text-align: center;
-      color: #333;
-    }
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      background: #fff;
-      padding: 30px 20px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    #contact-links a {
-      margin: 0 10px;
-      text-decoration: none;
-      color: #0066cc;
-      font-weight: bold;
-      font-size: 16px;
-    }
-    .logo {
-      max-width: 80px;
-      margin: 10px auto;
-    }
-    .agency-info {
-      margin: 10px 0 20px 0;
-      color: #003399;
-    }
-    .agency-info a {
-      color: #0066cc;
-      text-decoration: none;
-    }
-    .form-section {
-      margin-top: 20px;
-      font-size: 18px;
-    }
-    .form-section input, .form-section select {
-      font-size: 16px;
-    }
-    .form-section button {
-      margin: 8px;
-      padding: 6px 12px;
-    }
-    .disclaimer {
-      margin-top: 30px;
-      color: red;
-      font-weight: bold;
-      font-size: 16px;
-      line-height: 1.8;
-    }
+    body { font-family: Microsoft JhengHei, sans-serif; text-align: center; background: #f8f8f8; }
+    .logo { max-width: 120px; margin-top: 10px; }
+    #result span { color: red; font-weight: bold; font-size: 18px; }
+    .container { max-width: 800px; margin: 0 auto; background: #fff; padding: 30px 20px; border-radius: 12px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    label { font-weight: bold; }
+    input, select { font-size: 16px; padding: 4px; }
+    button { font-size: 16px; margin-top: 10px; padding: 6px 14px; }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2 style="font-weight:bold;">土地複丈規費試算</h2>
+    <h2>土地複丈規費試算</h2>
+    <img src="logo.png" class="logo" alt="LOGO" />
+    <p style="color:#003399;">
+      不動產經紀人：林梁祖<br>
+      電話：<a href="tel:0912428605" style="color:#0066cc;">0912428605</a>
+    </p>
 
-    <div id="contact-links">
-      <a href="https://www.facebook.com/profile.php?id=100082625327420" target="_blank">🌐 粉專</a> |
-      <a href="https://www.facebook.com/groups/923714991628656/" target="_blank">👥 社團</a> |
-      <a href="https://line.me/ti/p/aLynUIRtsJ" target="_blank">📞 LINE</a> |
-      <a href="https://linktr.ee/lhu0912428605" target="_blank">🕒 Linktree</a> |
-      <a href="https://www.instagram.com/hanwu_liang/" target="_blank">📸 IG</a>
+    <div>
+      <label>複丈類型：</label>
+      <select id="type">
+        <option value="鑑界複丈">鑑界複丈</option>
+        <option value="地形複丈">地形複丈</option>
+      </select><br><br>
+
+      <label>土地面積（平方公尺）：</label>
+      <input type="number" id="area" value="100" /><br><br>
+
+      <label>鑑界點數：</label>
+      <input type="number" id="points" value="5" /><br><br>
+
+      <button onclick="calculate()">試算</button><br><br>
     </div>
 
-    <img src="logo.png" alt="契合不動產 LOGO" class="logo" style="max-width:120px;">
+    
+    <div id="result"></div>
 
+    <div style="margin-top:20px;">
+      <button onclick="exportTXT()">匯出 TXT</button>
+      <button onclick="window.print()">列印本頁</button>
+      <button onclick="showHistory()">歷史紀錄</button>
+      <button onclick="clearHistory()">清除歷史紀錄</button>
+    </div>
+
+    <div id="history" style="margin-top:20px;"></div>
     
 
-    <div class="form-section">
-      
-
-  <div class="text-center">
-    
-    
-    <p style="font-size: 1.05rem; color: #007bff; text-align: center; font-weight: 500;">
-      不動產經紀人：<strong>林梁祖</strong><br>
-      電話：<strong>0912428605</strong>
+    <p style="color:red; font-weight:bold; margin-top:40px;">
+      本網站《土地複丈規費試算》工具為非官方製作，僅供個人參考使用，計算結果請以實際地政機關公告為準。<br>
+      本網站未使用政府網站原始程式碼與資源，亦無連結其後端系統，如有侵權請來信通知，我方將立即下架修正。
     </p>
   </div>
 
-  <div class="card shadow p-4">
-    <div class="mb-3">
-      <label class="form-label">複丈類型</label>
-      <select id="type" class="form-select">
-        <option value="鑑界">鑑界複丈</option>
-        <option value="分割">分割、界址調整等</option>
-      </select>
-    </div>
-
-    <div class="mb-3">
-      <label class="form-label">土地面積（平方米）</label>
-      <input type="number" id="area" class="form-control" value="100">
-    </div>
-
-    <div id="segmentInput" class="mb-3">
-      <label class="form-label">鑑界點數（每5點為1單位，不足5點以1單位計）</label>
-      <input type="number" id="points" class="form-control" value="5">
-    </div>
-
-    <div id="lineInput" style="display:none;">
-      <div class="mb-3">
-        <label class="form-label">複丈線段數</label>
-        <input type="number" id="lines" class="form-control" value="1">
-      </div>
-      <div class="mb-3">
-        <label class="form-label">協助確定界址點數（每點加收200元）</label>
-        <input type="number" id="assistPoints" class="form-control" value="0">
-      </div>
-    </div>
-
-    <button onclick="calculate()" class="btn btn-primary w-100 mb-2">試算</button>
-    <button onclick="downloadTXT()" class="btn btn-outline-secondary w-100 mb-2">匯出 TXT</button>
-    <button onclick="window.print()" class="btn btn-outline-dark w-100 mb-2">列印本頁</button>
-    <button onclick="showHistory()" class="btn btn-outline-info w-100 mb-2">歷史紀錄</button>
-       <button onclick="clearHistory()" class="btn btn-outline-danger w-100">清除歷史紀錄</button>
-
-    <div id="result" class="result-box text-danger fw-bold mt-4"></div>
-  </div>
-
-  <div class="card mt-4 shadow p-3 d-none" id="historyCard">
-    <h5 class="text-center mb-3">歷史紀錄</h5>
-    <ul id="historyList" class="list-group"></ul>
-  </div>
-
   <script>
-    const typeSelect = document.getElementById("type");
-    const segmentInput = document.getElementById("segmentInput");
-    const lineInput = document.getElementById("lineInput");
-
-    typeSelect.addEventListener("change", () => {
-      if (typeSelect.value === "鑑界") {
-        segmentInput.style.display = "block";
-        lineInput.style.display = "none";
-      } else {
-        segmentInput.style.display = "none";
-        lineInput.style.display = "block";
-      }
-    });
-
-    function getBasicFee(area, type) {
-      if (type === "鑑界") {
-        if (area < 200) return 2500;
-        else if (area <= 1000) return 3000;
-        else if (area <= 10000) return 3500;
-        else return 4000;
-      } else {
-        if (area < 200) return 1500;
-        else if (area <= 1000) return 2000;
-        else if (area <= 10000) return 2500;
-        else return 3000;
-      }
-    }
-
     function calculate() {
-      const type = document.getElementById("type").value;
-      const area = parseFloat(document.getElementById("area").value);
-      const basicFee = getBasicFee(area, type);
-      let surveyFee = 0;
+      var area = parseFloat(document.getElementById("area").value) || 0;
+      var points = parseInt(document.getElementById("points").value) || 0;
+      var base = 2500;
+      var unit = 200;
+      var extra = Math.ceil(points / 5) * unit;
+      var total = base + extra;
 
-      if (type === "鑑界") {
-        const points = parseInt(document.getElementById("points").value);
-        const unitCount = Math.ceil(points / 5);
-        surveyFee = unitCount * 1000;
-      } else {
-        const lines = parseInt(document.getElementById("lines").value);
-        const assistPoints = parseInt(document.getElementById("assistPoints").value);
-        surveyFee = (lines * 500) + (assistPoints * 200);
-      }
-
-      const total = basicFee + surveyFee;
-      const resultText = `基本費：${basicFee} 元\n施測費：${surveyFee} 元\n\n合計：${total} 元`;
-      document.getElementById("result").innerHTML = resultText.replace(/\n/g, "<br>");
-      saveToHistory(type, area, resultText);
+      document.getElementById("result").innerHTML =
+        '<span>基本費：' + base + ' 元</span><br>' +
+        '<span>施工費：' + extra + ' 元</span><br>' +
+        '<span>合計：' + total + ' 元</span><br>';
     }
-
-    function saveToHistory(type, area, resultText) {
-      const timestamp = new Date().toLocaleString("zh-TW");
-      const entry = { type, area, resultText, timestamp };
-      const history = JSON.parse(localStorage.getItem("feeHistory") || "[]");
-      history.unshift(entry);
-      localStorage.setItem("feeHistory", JSON.stringify(history));
+  
+    function exportTXT() {
+      const result = document.getElementById("result").innerText;
+      const blob = new Blob([result], { type: "text/plain" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "複丈試算結果.txt";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
     }
 
     function showHistory() {
-      const historyCard = document.getElementById("historyCard");
-      const historyList = document.getElementById("historyList");
-      const history = JSON.parse(localStorage.getItem("feeHistory") || "[]");
-      historyList.innerHTML = "";
-      history.forEach(entry => {
-        const li = document.createElement("li");
-        li.className = "list-group-item";
-        li.innerHTML = `<strong>${entry.timestamp}</strong><br>類型：${entry.type}<br>面積：${entry.area}㎡<br>結果：<br>${entry.resultText.replace(/\n/g, "<br>")}`;
-        historyList.appendChild(li);
-      });
-      historyCard.classList.remove("d-none");
+      const history = JSON.parse(localStorage.getItem("calcHistory") || "[]");
+      let html = "<strong>歷史紀錄</strong><ul>";
+      history.forEach(item => html += "<li>" + item + "</li>");
+      html += "</ul>";
+      document.getElementById("history").innerHTML = html;
     }
 
-    async function downloadPDF() {
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
-
-      const type = document.getElementById("type").value;
-      const area = document.getElementById("area").value;
-      const resultText = document.getElementById("result").innerText;
-
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(16);
-      doc.text("土地複丈規費試算", 20, 20);
-
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(12);
-      doc.text(`複丈類型：${type}`, 20, 40);
-      doc.text(`面積：${area} 平方公尺`, 20, 50);
-      doc.text("計算結果：", 20, 60);
-      const lines = doc.splitTextToSize(resultText, 160);
-      doc.text(lines, 20, 70);
-
-      doc.save("複丈規費試算.pdf");
+    function clearHistory() {
+      localStorage.removeItem("calcHistory");
+      document.getElementById("history").innerHTML = "";
     }
-  
-function clearHistory() {
-  localStorage.removeItem("feeHistory");
-  document.getElementById("historyList").innerHTML = "";
-  alert("歷史紀錄已清除！");
-}
-</script>
 
-<!-- 免責聲明 -->
-<p style="font-size: 14px; text-align: center; color: gray; margin-top: 50px;">
-
-</p>
-    </div>
-
-    <div class="disclaimer">
-      本網站《土地複丈規費試算》工具為非官方製作，僅供個人參考使用，計算結果請以實際地政機關公告為準。<br>
-      本網站未使用政府網站原始程式碼與資源，亦無連結其後端系統，如有侵權請來信通知，我方將立即下架修正。
-    </div>
-  </div>
+    const originalCalc = calculate;
+    calculate = function() {
+      originalCalc();
+      const res = document.getElementById("result").innerText;
+      let history = JSON.parse(localStorage.getItem("calcHistory") || "[]");
+      history.unshift(res);
+      if (history.length > 10) history = history.slice(0, 10);
+      localStorage.setItem("calcHistory", JSON.stringify(history));
+    }
+  </script>
 </body>
 </html>
