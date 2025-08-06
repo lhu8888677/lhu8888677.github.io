@@ -3,33 +3,50 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>土地複丈規費試算</title>
+  <title>土地複丈規費試算（功能版）</title>
+  <style>
+    body { font-family: "Microsoft JhengHei", sans-serif; text-align: center; background: #f5f5f5; padding: 40px; }
+    .box { background: white; border-radius: 10px; padding: 30px; box-shadow: 0 0 10px rgba(0,0,0,0.1); display: inline-block; }
+    input, select, button { margin: 6px; padding: 8px; font-size: 16px; }
+    #result span { color: red; font-weight: bold; display: block; margin: 4px 0; }
+    #history { margin-top: 20px; text-align: left; max-width: 500px; margin-left: auto; margin-right: auto; }
+    #history ul { padding-left: 20px; }
+    #history li { line-height: 1.6; }
+  </style>
 </head>
 <body>
-  <h2>土地複丈規費試算（級距修正版）</h2>
-  <label>複丈類型：</label>
-  <select id="type">
-    <option value="鑑界複丈">鑑界複丈</option>
-    <option value="分割等">分割、調整等</option>
-  </select><br>
-  <label>土地面積（㎡）：</label>
-  <input type="number" id="area" value="100" /><br>
-  <label>施測單位數：</label>
-  <input type="number" id="units" value="5" /><br>
-  <button onclick="calculate()">試算</button>
-  <div id="result" style="margin-top:20px;"></div>
+  <div class="box">
+    <h2>土地複丈規費試算（功能版）</h2>
+    <p>不動產經紀人：林梁祖<br>電話：<a href="tel:0912428605">0912428605</a></p>
+    <label>複丈類型：</label>
+    <select id="type">
+      <option value="鑑界複丈">鑑界複丈</option>
+      <option value="分割等">分割、調整等</option>
+    </select><br>
+    <label>土地面積（㎡）：</label>
+    <input type="number" id="area" value="100" /><br>
+    <label>施測單位數：</label>
+    <input type="number" id="units" value="5" /><br>
+    <button onclick="calculate()">試算</button>
+
+    <div id="result" style="margin-top:20px;"></div>
+
+    <div style="margin-top:20px;">
+      <button onclick="exportTXT()">匯出 TXT</button>
+      <button onclick="window.print()">列印本頁</button>
+      <button onclick="showHistory()">歷史紀錄</button>
+      <button onclick="clearHistory()">清除歷史紀錄</button>
+    </div>
+
+    <div id="history"></div>
+  </div>
 
 <script>
 function getBase(type, area) {
-  if (area < 200) {
-    return type === "鑑界複丈" ? 2500 : 1500;
-  } else if (area >= 200 && area < 1000) {
-    return type === "鑑界複丈" ? 3000 : 2000;
-  } else if (area >= 1000 && area < 10000) {
-    return type === "鑑界複丈" ? 3500 : 2500;
-  } else {
-    return type === "鑑界複丈" ? 4000 : 3000;
-  }
+  if (area < 200) return type === "鑑界複丈" ? 2500 : 1500;
+  else if (area >= 200 && area < 1000) return type === "鑑界複丈" ? 3000 : 2000;
+  else if (area >= 1000 && area < 10000) return type === "鑑界複丈" ? 3500 : 2500;
+  else return type === "鑑界複丈" ? 4000 : 3000;
 }
 function calculate(){
   const area = parseFloat(document.getElementById("area").value) || 0;
@@ -42,9 +59,36 @@ function calculate(){
   const total = base + unitFee;
 
   document.getElementById("result").innerHTML =
-    '基本費：' + base + ' 元<br>' +
-    '施測費（' + unitCount + ' 單位 × ' + unitRate + ' 元）：' + unitFee + ' 元<br>' +
-    '合計：' + total + ' 元';
+    '<span>基本費：' + base + ' 元</span>' +
+    '<span>施測費（' + unitCount + ' 單位 × ' + unitRate + ' 元）：' + unitFee + ' 元</span>' +
+    '<span>合計：' + total + ' 元</span>';
+
+  let h = JSON.parse(localStorage.getItem("calcHistory") || "[]");
+  h.unshift(`類型：${type}｜面積：${area}㎡｜單位：${units}｜共：${total}元`);
+  if (h.length > 10) h = h.slice(0, 10);
+  localStorage.setItem("calcHistory", JSON.stringify(h));
+}
+function exportTXT() {
+  const t = document.getElementById("result").innerText;
+  const b = new Blob([t], { type: "text/plain" });
+  const u = URL.createObjectURL(b);
+  const a = document.createElement("a");
+  a.href = u;
+  a.download = "複丈試算結果.txt";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+function showHistory() {
+  const h = JSON.parse(localStorage.getItem("calcHistory") || "[]");
+  let html = "<strong>歷史紀錄</strong><ul>";
+  h.forEach(i => html += "<li>" + i + "</li>");
+  html += "</ul>";
+  document.getElementById("history").innerHTML = html;
+}
+function clearHistory() {
+  localStorage.removeItem("calcHistory");
+  document.getElementById("history").innerHTML = "";
 }
 </script>
 </body>
