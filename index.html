@@ -28,18 +28,6 @@
     #history li { line-height: 1.6; }
   </style>
 </head>
-<link rel="manifest" href="manifest.json">
-<script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('service-worker.js');
-  }
-<!-- 強化 PWA 支援與手機捷徑提示 -->
-<link rel="apple-touch-icon" href="icons/icon-192.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="mobile-web-app-capable" content="yes">
-
-</script>
-</head>
 <body>
 <div class="box">
     <img src="logo.png" alt="契合不動產 LOGO" style="max-width: 100px; margin-bottom: 10px;">
@@ -66,7 +54,7 @@
     </div>
 
     <div id="history"></div>
-  </div>
+</div>
 
 <script>
 function getBase(type, area) {
