@@ -36,6 +36,10 @@
   <a href="https://www.facebook.com/profile.php?id=100082625327420" target="_blank">👉 Facebook 粉專</a><br>
   <a href="https://www.facebook.com/groups/923714991628656" target="_blank">👉 Facebook 社團</a><br>
   <a href="https://www.instagram.com/hanwu_liang/" target="_blank">👉 IG：@hanwu_liang</a>
+<hr style="margin-top: 40px;">
+<p><strong>📱 分享與安裝提示</strong></p>
+<button onclick="sharePage()" style="padding:8px 20px;border-radius:6px;background:#007bff;color:white;border:none;">🔗 分享此網站</button>
+<p style="margin-top: 10px;">📌 您可使用瀏覽器選單功能「加入主畫面」來快速啟用此工具</p>
 </div>
 
     <img src="logo.png" alt="契合不動產 LOGO" style="max-width: 100px; margin-bottom: 10px;">
@@ -115,6 +119,21 @@ function showHistory() {
 function clearHistory() {
   localStorage.removeItem("calcHistory");
   document.getElementById("history").innerHTML = "";
+}
+function sharePage() {
+  if (navigator.share) {
+    navigator.share({
+      title: '土地複丈規費試算',
+      text: '快速試算規費工具，立即使用！',
+      url: window.location.href
+    }).then(() => {
+      console.log('分享成功');
+    }).catch((error) => {
+      console.log('分享失敗', error);
+    });
+  } else {
+    alert('您的瀏覽器不支援分享功能，請手動複製網址');
+  }
 }
 </script>
 </body>
