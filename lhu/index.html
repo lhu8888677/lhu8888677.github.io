@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>土地複丈規費試算（功能版）</title>
+
+  <!-- ✅ 正確 PWA 設定 -->
+  <link rel="manifest" href="https://lhu8888677.github.io/manifest.json">
+  <link rel="apple-touch-icon" href="https://lhu8888677.github.io/icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#cc5500">
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js');
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: "Microsoft JhengHei", sans-serif;
+      text-align: center;
+      background: #f5f5f5;
+      padding: 40px;
+    }
+    .box {
+      background: white;
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      display: inline-block;
+    }
+    input, select, button {
+      margin: 6px;
+      padding: 8px;
+      font-size: 16px;
+    }
+    #result span {
+      color: red;
+      font-weight: bold;
+      display: block;
+      margin: 4px 0;
+    }
+    #history {
+      margin-top: 20px;
+      text-align: left;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    #history ul {
+      padding-left: 20px;
+    }
+    #history li {
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+
+    <!-- 📌 LOGO + 標題 + 聯絡資訊 -->
+    <div style="text-align: center; margin-bottom: 20px;">
+      <img src="logo.png" alt="契合不動產 LOGO" style="width: 90px; height: auto; display: block; margin: 0 auto 10px;">
+      <h2 style="margin: 10px 0;">土地複丈規費試算（功能版）</h2>
+      <p>不動產經紀人：林梁祖<br>
+        電話：<a href="tel:0912428605">0912428605</a>
+      </p>
+    </div>
+
+    <!-- 📌 試算表單 -->
+    <label>複丈類型：</label>
+    <select id="type">
+      <option value="鑑界複丈">鑑界複丈</option>
+      <option value="分割等">分割、調整等</option>
+    </select><br>
+
+    <label>土地面積（㎡）：</label>
+    <input type="number" id="area" value="100"><br>
+
+    <label>施測單位數：</label>
+    <input type="number" id="units" value="5"><br>
+
+    <button onclick="calculate()">試算</button>
+
+    <div id="result" style="margin-top:20px;"></div>
+
+    <!-- 📌 操作按鈕 -->
+    <div style="margin-top:20px;">
+      <button onclick="exportTXT()">匯出 TXT</button>
+      <button onclick="window.print()">列印本頁</button>
+      <button onclick="showHistory()">歷史紀錄</button>
+      <button onclick="clearHistory()">清除歷史紀錄</button>
+    </div>
+
+    <!-- 📌 歷史紀錄 -->
+    <div id="history"></div>
+
+    <!-- 📌 快速連結 -->
+    <div style="margin-top: 30px; text-align: left;">
+      <hr>
+      <p style="font-weight: bold;">快速連結｜FOLLOW US</p>
+      <p>👉 <a href="https://line.me/ti/p/aLynUIRtsJ" target="_blank">LINE 諮詢</a></p>
+      <p>👉 <a href="https://www.facebook.com/profile.php?id=100082625327420" target="_blank">Facebook 粉專</a></p>
+      <p>👉 <a href="https://www.facebook.com/groups/923714991628656" target="_blank">Facebook 社團</a></p>
+      <p>👉 <a href="https://www.instagram.com/hanwu_liang/" target="_blank">IG：@hanwu_liang</a></p>
+      <p>👉 <a href="https://www.youtube.com/@h-ul4237" target="_blank">YouTube 頻道</a></p>
+      <p>👉 <a href="https://www.threads.net/@hanwu_liang" target="_blank">Threads</a></p>
+    </div>
+
+    <!-- 📌 分享與安裝提示 -->
+    <hr style="margin-top: 40px;">
+    <p><strong>📱 分享與安裝提示</strong></p>
+    <button onclick="sharePage()" style="padding:8px 20px;border-radius:6px;background:#007bff;color:white;border:none;">🔗 分享此網站</button>
+    <button id="installBtn" style="padding:8px 20px;border-radius:6px;background:#28a745;color:white;border:none;display:none;">📲 加入主畫面</button>
+    <p style="margin-top: 10px;">📌 您可使用瀏覽器選單功能「加入主畫面」來快速啟用此工具</p>
+
+    <!-- 📌 前往快速導覽 -->
+    <div style="margin-top: 30px;">
+      <a href="https://lhu8888677.github.io/index_links.html" style="display:inline-block;padding:10px 20px;border-radius:8px;background:#cc5500;color:#fff;text-decoration:none;">📌 前往快速導覽頁</a>
+    </div>
+
+  </div>
+
+  <!-- 📌 PWA 安裝提示腳本 -->
+  <script>
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+
+      const installBtn = document.getElementById("installBtn");
+      if (installBtn) {
+        installBtn.style.display = "inline-block";
+        installBtn.addEventListener('click', () => {
+          deferredPrompt.prompt();
+          deferredPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+              console.log('使用者接受安裝');
+            } else {
+              console.log('使用者取消安裝');
+            }
+            deferredPrompt = null;
+          });
+        });
+      }
+    });
+  </script>
+
+  <!-- 📌 原本的功能腳本 -->
+  <script>
+    function getBase(type, area) {
+      if (area < 200) return type === "鑑界複丈" ? 2500 : 1500;
+      else if (area >= 200 && area < 1000) return type === "鑑界複丈" ? 3000 : 2000;
+      else if (area >= 1000 && area < 10000) return type === "鑑界複丈" ? 3500 : 2500;
+      else return type === "鑑界複丈" ? 4000 : 3000;
+    }
+    function calculate(){
+      const area = parseFloat(document.getElementById("area").value) || 0;
+      const units = parseInt(document.getElementById("units").value) || 0;
+      const type = document.getElementById("type").value;
+      const base = getBase(type, area);
+      const unitRate = type === "鑑界複丈" ? 1000 : 500;
+      const unitCount = type === "鑑界複丈" ? Math.ceil(units / 5) : units;
+      const unitFee = unitRate * unitCount;
+      const total = base + unitFee;
+
+      document.getElementById("result").innerHTML =
+        '<span>基本費：' + base + ' 元</span>' +
+        '<span>施測費（' + unitCount + ' 單位 × ' + unitRate + ' 元）：' + unitFee + ' 元</span>' +
+        '<span>合計：' + total + ' 元</span>';
+
+      let h = JSON.parse(localStorage.getItem("calcHistory") || "[]");
+      h.unshift(`類型：${type}｜面積：${area}㎡｜單位：${units}｜共：${total}元`);
+      if (h.length > 10) h = h.slice(0, 10);
+      localStorage.setItem("calcHistory", JSON.stringify(h));
+    }
+
+    function exportTXT() {
+      const t = document.getElementById("result").innerText;
+      const b = new Blob([t], { type: "text/plain" });
+      const u = URL.createObjectURL(b);
+      const a = document.createElement("a");
+      a.href = u;
+      a.download = "複丈試算結果.txt";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+
+    function showHistory() {
+      const h = JSON.parse(localStorage.getItem("calcHistory") || "[]");
+      let html = "<strong>歷史紀錄</strong><ul>";
+      h.forEach(i => html += "<li>" + i + "</li>");
+      html += "</ul>";
+      document.getElementById("history").innerHTML = html;
+    }
+
+    function clearHistory() {
+      localStorage.removeItem("calcHistory");
+      document.getElementById("history").innerHTML = "";
+    }
+
+    function sharePage() {
+      if (navigator.share) {
+        navigator.share({
+          title: '土地複丈規費試算',
+          text: '快速試算規費工具，立即使用！',
+          url: window.location.href
+        }).then(() => {
+          console.log('分享成功');
+        }).catch((error) => {
+          console.log('分享失敗', error);
+        });
+      } else {
+        alert('您的瀏覽器不支援分享功能，請手動複製網址');
+      }
+    }
+  </script>
+</body>
+
+</html>
