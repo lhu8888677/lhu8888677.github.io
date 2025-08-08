@@ -1,67 +1,76 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>契合不動產｜快速連結</title>
   <style>
     body {
-      font-family: Microsoft JhengHei, sans-serif;
-      background: #f8f8f8;
+      font-family: "Microsoft JhengHei", sans-serif;
+      background: #f5f5f5;
       text-align: center;
-      padding: 30px;
+      padding: 40px;
     }
     .container {
-      max-width: 500px;
-      margin: auto;
+      background: white;
+      border-radius: 10px;
+      padding: 30px;
+      display: inline-block;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
-    img {
-      max-width: 120px;
-      margin-top: 10px;
-    }
-    h1 {
-      color: #cc5500;
-      font-size: 24px;
-      margin: 10px 0;
-    }
-    a.link {
+    a.button {
       display: block;
-      margin: 12px auto;
-      padding: 14px;
-      background: #fff;
-      color: #333;
+      margin: 12px 0;
+      padding: 10px 20px;
+      background: #ffffff;
+      color: #000;
       text-decoration: none;
-      font-size: 18px;
+      border: 2px solid #ccc;
       border-radius: 8px;
-      border: 1px solid #ccc;
-      max-width: 400px;
+      font-size: 16px;
     }
-    a.link:hover {
-      background: #ffe5cc;
+    a.button:hover {
+      background-color: #eee;
+    }
+    img.logo {
+      width: 100px;
+      margin-bottom: 10px;
     }
     .footer {
       margin-top: 30px;
-      font-size: 14px;
-      color: #888;
+      font-size: 13px;
+      color: #777;
+    }
+    .back-home {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: #ff6600;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <img src="logo.png" alt="契合不動產 LOGO" />
-    <h1>契合不動產｜快速連結</h1>
+    <img src="logo.png" alt="契合不動產 LOGO" class="logo">
+    <h2>契合不動產｜快速連結</h2>
 
-    <a class="link" href="https://lhu8888677.github.io/index.html" target="_blank">▶ 開始使用土地複丈規費試算</a>
-    <a class="link" href="https://line.me/ti/p/aLynUIRtsJ" target="_blank">▶ 加入 LINE 諮詢</a>
-    <a class="link" href="https://www.facebook.com/profile.php?id=100082625327420" target="_blank">▶ 粉專：契合不動產</a>
-    <a class="link" href="https://www.facebook.com/groups/923714991628656" target="_blank">▶ 社團：花蓮縣南不動產交流</a>
-    <a class="link" href="https://www.instagram.com/hanwu_liang/" target="_blank">▶ IG：@hanwu_liang</a>
-    <a class="link" href="https://www.youtube.com/@h-ul4237" target="_blank">▶ YouTube 頻道</a>
-    <a class="link" href="https://www.threads.net/@hanwu_liang" target="_blank">▶ Threads</a>
-    <a class="link" href="tel:0912428605">▶ 聯絡經紀人：0912428605</a>
+    <a href="index.html" class="button">▶️ 開始使用土地複丈規費試算</a>
+    <a href="https://line.me/ti/p/aLynUIRtsJ" class="button" target="_blank">▶️ 加入 LINE 諮詢</a>
+    <a href="https://www.facebook.com/profile.php?id=100082625327420" class="button" target="_blank">▶️ 粉專：契合不動產</a>
+    <a href="https://www.facebook.com/groups/923714991628656" class="button" target="_blank">▶️ 社團：花蓮縣南不動產交流</a>
+    <a href="https://www.instagram.com/hanwu_liang/" class="button" target="_blank">▶️ IG：@hanwu_liang</a>
+    <a href="https://www.youtube.com/@h-ul4237" class="button" target="_blank">▶️ YouTube 頻道</a>
+    <a href="https://www.threads.net/@hanwu_liang" class="button" target="_blank">▶️ Threads</a>
 
-    <a href="index.html" onclick="location.href='index.html';" style="display:inline-block;padding:10px 20px;border-radius:8px;background:#ff6600;color:#fff;text-decoration:none;">🔙 回土地複丈首頁</a>
-    <div class="footer">© 契合不動產 Lin Liang-Tsu</div>
+    <div class="footer">
+      聯絡經紀人：0912428605
+    </div>
+    
+    <a href="install.html" class="button" target="_blank">▶️ 安裝手機桌面教學</a>
+    <a href="index.html" class="back-home">⬅ 回土地複丈首頁</a>
   </div>
 </body>
 </html>
