@@ -44,7 +44,21 @@
     #result span{display:block; margin:2px 0}
     .fee{color:#c1121f; font-weight:800}
     .muted{color:var(--muted); font-size:12px; text-align:center}
-  </style>
+  
+/* logo-size-custom */
+.logo {
+    width: 300px;
+    height: 300px;
+    object-fit: contain;
+}
+@media (max-width: 768px) {
+    .logo {
+        width: 225px;
+        height: 225px;
+    }
+}
+
+</style>
 </head>
 <body>
   <div class="card">

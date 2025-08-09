@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#cc5500">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>安裝手機桌面教學</title>
@@ -69,5 +74,12 @@
       <a href="index_links.html">⬅ 回快速導覽頁</a>
     </div>
   </div>
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./service-worker.js', { scope: './' })
+      .then(() => console.log('SW registered'))
+      .catch(err => console.log('SW registration failed:', err));
+  }
+</script>
 </body>
 </html>
