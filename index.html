@@ -3,20 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>土地複丈規費試算（功能版）</title>
+  <title>土地複丈規費試算</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
 
-  <!-- ✅ 正確 PWA 設定 -->
-  <link rel="manifest" href="https://lhu8888677.github.io/manifest.json">
+  <!-- 正確：指向 /lhu/ 目錄下的檔案 -->
+  <link rel="manifest" href="./manifest.json">
   <link rel="apple-touch-icon" href="https://lhu8888677.github.io/icons/icon-192.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#cc5500">
-
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js');
-    }
-  </script>
+</head>
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./service-worker.js', { scope: './' })
+    .then(() => console.log('SW registered'))
+    .catch(console.error);
+}
+</script>
 
   <style>
     body {
