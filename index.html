@@ -1,164 +1,100 @@
+
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>土地複丈規費試算</title>
-  <link rel="manifest" href="manifest.json">
-  <link rel="stylesheet" href="style.css">
-
-  <!-- 正確：指向 /lhu/ 目錄下的檔案 -->
-  <link rel="manifest" href="./manifest.json">
-  <link rel="apple-touch-icon" href="https://lhu8888677.github.io/icons/icon-192.png">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="theme-color" content="#cc5500">
-</head>
-<script>
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./service-worker.js', { scope: './' })
-    .then(() => console.log('SW registered'))
-    .catch(console.error);
-}
-</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>土地複丈規費試算（功能版）</title>
 
   <style>
-    body {
-      font-family: "Microsoft JhengHei", sans-serif;
-      text-align: center;
-      background: #f5f5f5;
-      padding: 40px;
-    }
-    .box {
-      background: white;
-      border-radius: 10px;
-      padding: 30px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      display: inline-block;
-    }
-    input, select, button {
-      margin: 6px;
-      padding: 8px;
-      font-size: 16px;
-    }
-    #result span {
-      color: red;
-      font-weight: bold;
-      display: block;
-      margin: 4px 0;
-    }
-    #history {
-      margin-top: 20px;
-      text-align: left;
-      max-width: 500px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    #history ul {
-      padding-left: 20px;
-    }
-    #history li {
-      line-height: 1.6;
-    }
+    :root{--brand:#cc5500;--ink:#222;--muted:#666;--bg:#f6f6f6;--card:#fff;}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:"Microsoft JhengHei",system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans TC",sans-serif}
+    .shell{min-height:100svh;display:grid;place-items:center;padding:24px}
+    .box{width:min(560px,100%);background:var(--card);border-radius:16px;padding:24px;box-shadow:0 6px 18px rgba(0,0,0,.08)}
+    .logo{width:90px;height:auto;display:block;margin:8px auto 12px}
+    h2{margin:6px 0 2px;font-size:22px;text-align:center}
+    .sub{margin:0 0 16px;color:var(--muted);font-size:12px;text-align:center}
+    label{display:inline-block;margin:10px 8px 6px 0}
+    input,select,button{font:inherit}
+    input,select{width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:10px}
+    .grid{display:grid;gap:10px}
+    .grid.cols-2{grid-template-columns:1fr 1fr}
+    @media (max-width:480px){ .grid.cols-2{grid-template-columns:1fr} }
+    .btn{display:inline-block;padding:10px 14px;border-radius:10px;border:1px solid #ddd;background:#fff;color:#222;text-decoration:none;cursor:pointer}
+    .btn-primary{background:var(--brand);border-color:var(--brand);color:#fff}
+    .btn-bar{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:12px}
+    #result span{display:block;margin-top:4px;color:#d11;font-weight:700}
+    .links{line-height:1.9;margin-top:16px}
+    .muted{color:var(--muted);font-size:12px;text-align:center}
+    hr{border:none;border-top:1px solid #eee;margin:18px 0}
   </style>
 </head>
 <body>
-  <div class="box">
+  <div class="shell">
+    <main class="box">
+      <img class="logo" src="./logo.png" alt="契合不動產 LOGO" />
 
-    <!-- 📌 LOGO + 標題 + 聯絡資訊 -->
-    <div style="text-align: center; margin-bottom: 20px;">
-      <img src="logo.png" alt="契合不動產 LOGO" style="width: 90px; height: auto; display: block; margin: 0 auto 10px;">
-      <h2 style="margin: 10px 0;">土地複丈規費試算（功能版）</h2>
-      <p>不動產經紀人：林梁祖<br>
-        電話：<a href="tel:0912428605">0912428605</a>
-      </p>
-    </div>
+      <h2>土地複丈規費試算（功能版）</h2>
+      <p class="sub">依內政部收費基準表邏輯製作，結果僅供參考。</p>
 
-    <!-- 📌 試算表單 -->
-    <label>複丈類型：</label>
-    <select id="type">
-      <option value="鑑界複丈">鑑界複丈</option>
-      <option value="分割等">分割、調整等</option>
-    </select><br>
+      <div class="grid">
+        <label>複丈類型：</label>
+        <select id="type">
+          <option value="鑑界複丈">鑑界複丈</option>
+          <option value="分割等">分割、調整等</option>
+        </select>
 
-    <label>土地面積（㎡）：</label>
-    <input type="number" id="area" value="100"><br>
+        <label>土地面積（㎡）：</label>
+        <input type="number" id="area" value="100" />
 
-    <label>施測單位數：</label>
-    <input type="number" id="units" value="5"><br>
+        <label>施測單位數：</label>
+        <input type="number" id="units" value="5" />
+      </div>
 
-    <button onclick="calculate()">試算</button>
+      <div class="btn-bar">
+        <button class="btn btn-primary" onclick="calculate()">試算</button>
+        <button class="btn" onclick="exportTXT()">匯出 TXT</button>
+        <button class="btn" onclick="window.print()">列印本頁</button>
+        <button class="btn" onclick="showHistory()">歷史紀錄</button>
+        <button class="btn" onclick="clearHistory()">清除歷史紀錄</button>
+        <button class="btn" onclick="sharePage()">分享此網站</button>
+      </div>
 
-    <div id="result" style="margin-top:20px;"></div>
+      <div id="result" style="margin-top:12px;"></div>
+      <div id="history" style="margin-top:8px;"></div>
 
-    <!-- 📌 操作按鈕 -->
-    <div style="margin-top:20px;">
-      <button onclick="exportTXT()">匯出 TXT</button>
-      <button onclick="window.print()">列印本頁</button>
-      <button onclick="showHistory()">歷史紀錄</button>
-      <button onclick="clearHistory()">清除歷史紀錄</button>
-    </div>
+      <hr />
 
-    <!-- 📌 歷史紀錄 -->
-    <div id="history"></div>
+      <div class="links">
+        <strong>快速連結｜FOLLOW US</strong><br>
+        👉 <a href="https://line.me/ti/p/aLynUIRtsJ" target="_blank" rel="noopener">LINE 諮詢</a><br>
+        👉 <a href="https://www.facebook.com/profile.php?id=100082625327420" target="_blank" rel="noopener">Facebook 粉專</a><br>
+        👉 <a href="https://www.facebook.com/groups/923714991628656" target="_blank" rel="noopener">Facebook 社團</a><br>
+        👉 <a href="https://www.instagram.com/hanwu_liang/" target="_blank" rel="noopener">IG：@hanwu_liang</a><br>
+        👉 <a href="https://www.youtube.com/@h-ul4237" target="_blank" rel="noopener">YouTube 頻道</a><br>
+        👉 <a href="https://www.threads.net/@hanwu_liang" target="_blank" rel="noopener">Threads</a>
+      </div>
 
-    <!-- 📌 快速連結 -->
-    <div style="margin-top: 30px; text-align: left;">
-      <hr>
-      <p style="font-weight: bold;">快速連結｜FOLLOW US</p>
-      <p>👉 <a href="https://line.me/ti/p/aLynUIRtsJ" target="_blank">LINE 諮詢</a></p>
-      <p>👉 <a href="https://www.facebook.com/profile.php?id=100082625327420" target="_blank">Facebook 粉專</a></p>
-      <p>👉 <a href="https://www.facebook.com/groups/923714991628656" target="_blank">Facebook 社團</a></p>
-      <p>👉 <a href="https://www.instagram.com/hanwu_liang/" target="_blank">IG：@hanwu_liang</a></p>
-      <p>👉 <a href="https://www.youtube.com/@h-ul4237" target="_blank">YouTube 頻道</a></p>
-      <p>👉 <a href="https://www.threads.net/@hanwu_liang" target="_blank">Threads</a></p>
-    </div>
+      <!-- 離線版入口 -->
+      <div class="btn-bar">
+        <a class="btn btn-primary" href="./lhu/離線版/index.html" rel="noopener">
+          📥 使用離線版試算（免網路可操作）
+        </a>
+        <a class="btn" href="./index_links.html" target="_blank" rel="noopener">
+          📌 前往快速導覽頁
+        </a>
+      </div>
 
-    <!-- 📌 分享與安裝提示 -->
-    <hr style="margin-top: 40px;">
-    <p><strong>📱 分享與安裝提示</strong></p>
-    <button onclick="sharePage()" style="padding:8px 20px;border-radius:6px;background:#007bff;color:white;border:none;">🔗 分享此網站</button>
-    <button id="installBtn" style="padding:8px 20px;border-radius:6px;background:#28a745;color:white;border:none;display:none;">📲 加入主畫面</button>
-    <p style="margin-top: 10px;">📌 您可使用瀏覽器選單功能「加入主畫面」來快速啟用此工具</p>
-
-    <!-- 📌 前往快速導覽 -->
-    <div style="margin-top: 30px;">
-      <a href="https://lhu8888677.github.io/index_links.html" style="display:inline-block;padding:10px 20px;border-radius:8px;background:#cc5500;color:#fff;text-decoration:none;">📌 前往快速導覽頁</a>
-    </div>
-
+      <p class="muted" style="margin-top:8px;">第一次啟用離線版需連網快取，之後可離線使用（外部連結需網路）。</p>
+    </main>
   </div>
 
-  <!-- 📌 PWA 安裝提示腳本 -->
   <script>
-    let deferredPrompt;
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-
-      const installBtn = document.getElementById("installBtn");
-      if (installBtn) {
-        installBtn.style.display = "inline-block";
-        installBtn.addEventListener('click', () => {
-          deferredPrompt.prompt();
-          deferredPrompt.userChoice.then((choiceResult) => {
-            if (choiceResult.outcome === 'accepted') {
-              console.log('使用者接受安裝');
-            } else {
-              console.log('使用者取消安裝');
-            }
-            deferredPrompt = null;
-          });
-        });
-      }
-    });
-  </script>
-
-  <!-- 📌 原本的功能腳本 -->
-  <script>
-    function getBase(type, area) {
+    function getBase(type, area){
       if (area < 200) return type === "鑑界複丈" ? 2500 : 1500;
-      else if (area >= 200 && area < 1000) return type === "鑑界複丈" ? 3000 : 2000;
-      else if (area >= 1000 && area < 10000) return type === "鑑界複丈" ? 3500 : 2500;
+      else if (area < 1000) return type === "鑑界複丈" ? 3000 : 2000;
+      else if (area < 10000) return type === "鑑界複丈" ? 3500 : 2500;
       else return type === "鑑界複丈" ? 4000 : 3000;
     }
     function calculate(){
@@ -166,8 +102,8 @@ if ('serviceWorker' in navigator) {
       const units = parseInt(document.getElementById("units").value) || 0;
       const type = document.getElementById("type").value;
       const base = getBase(type, area);
-      const unitRate = type === "鑑界複丈" ? 1000 : 500;
-      const unitCount = type === "鑑界複丈" ? Math.ceil(units / 5) : units;
+      const unitRate = (type === "鑑界複丈") ? 1000 : 500;
+      const unitCount = (type === "鑑界複丈") ? Math.ceil(units/5) : units;
       const unitFee = unitRate * unitCount;
       const total = base + unitFee;
 
@@ -181,48 +117,31 @@ if ('serviceWorker' in navigator) {
       if (h.length > 10) h = h.slice(0, 10);
       localStorage.setItem("calcHistory", JSON.stringify(h));
     }
-
-    function exportTXT() {
-      const t = document.getElementById("result").innerText;
-      const b = new Blob([t], { type: "text/plain" });
+    function exportTXT(){
+      const t = document.getElementById("result").innerText || '尚未試算';
+      const b = new Blob([t], {type:'text/plain'});
       const u = URL.createObjectURL(b);
-      const a = document.createElement("a");
-      a.href = u;
-      a.download = "複丈試算結果.txt";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+      const a = document.createElement('a');
+      a.href = u; a.download = '複丈試算結果.txt';
+      document.body.appendChild(a); a.click(); a.remove();
+      URL.revokeObjectURL(u);
     }
-
-    function showHistory() {
+    function showHistory(){
       const h = JSON.parse(localStorage.getItem("calcHistory") || "[]");
       let html = "<strong>歷史紀錄</strong><ul>";
       h.forEach(i => html += "<li>" + i + "</li>");
       html += "</ul>";
       document.getElementById("history").innerHTML = html;
     }
-
-    function clearHistory() {
+    function clearHistory(){
       localStorage.removeItem("calcHistory");
       document.getElementById("history").innerHTML = "";
     }
-
-    function sharePage() {
-      if (navigator.share) {
-        navigator.share({
-          title: '土地複丈規費試算',
-          text: '快速試算規費工具，立即使用！',
-          url: window.location.href
-        }).then(() => {
-          console.log('分享成功');
-        }).catch((error) => {
-          console.log('分享失敗', error);
-        });
-      } else {
-        alert('您的瀏覽器不支援分享功能，請手動複製網址');
-      }
+    function sharePage(){
+      const data = { title:'土地複丈規費試算', text:'快速試算規費工具', url: location.href };
+      if (navigator.share) navigator.share(data).catch(()=>{});
+      else { navigator.clipboard.writeText(location.href); alert('已複製網址，可貼給客戶。'); }
     }
   </script>
 </body>
-
 </html>
