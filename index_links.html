@@ -1,76 +1,205 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>契合不動產｜快速連結</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>快速導覽｜契合不動產</title>
+  <meta name="theme-color" content="#cc5500">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="preload" href="/logo.png" as="image" />
+  <link rel="apple-touch-icon" href="https://lhu8888677.github.io/icons/icon-192.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  
   <style>
-    body {
-      font-family: "Microsoft JhengHei", sans-serif;
-      background: #f5f5f5;
-      text-align: center;
-      padding: 40px;
+    :root{
+      --brand:#cc5500;
+      --accent:#0b63d8;
+      --bg:#f6f6f6;
+      --card:#ffffff;
+      --muted:#666;
+      --danger:#ff0000;
+      --radius:16px;
+      --shadow:0 10px 24px rgba(0,0,0,.08);
     }
-    .container {
-      background: white;
-      border-radius: 10px;
-      padding: 30px;
-      display: inline-block;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    html,body{height:100%;margin:0}
+    body{
+      font-family:"Microsoft JhengHei",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans TC",sans-serif;
+      background:var(--bg);
+      color:#222;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: clamp(12px, 2vw, 24px);
     }
-    a.button {
-      display: block;
-      margin: 12px 0;
-      padding: 10px 20px;
-      background: #ffffff;
-      color: #000;
-      text-decoration: none;
-      border: 2px solid #ccc;
-      border-radius: 8px;
-      font-size: 16px;
+    .app{
+      width:min(96vw, 1080px);
+      min-height:min(92vh, 720px);
+      background:var(--card);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      display:grid;
+      grid-template-rows:auto 1fr auto;
+      overflow:hidden;
+      position: relative;
     }
-    a.button:hover {
-      background-color: #eee;
+    .header{
+      display:flex;
+      align-items:center;
+      gap: clamp(12px, 2vw, 24px);
+      padding: clamp(14px, 2.2vw, 24px);
+      border-bottom:1px solid #eee;
     }
-    img.logo {
-      width: 100px;
-      margin-bottom: 10px;
+    
+    .title-wrap{ display:flex; flex-direction:column; gap:4px; }
+    .title{ font-size: clamp(18px, 2.2vw, 28px); margin:0; letter-spacing:.02em; }
+    .contact{ margin:0; color:var(--accent); font-weight:800; font-size: clamp(13px, 1.4vw, 16px); }
+    .ribbon{
+      position:absolute; top:14px; right:-42px;
+      transform:rotate(45deg);
+      background:var(--danger);
+      font-size: clamp(16px, 1.8vw, 22px);
+      color:#fff; font-weight:700;
+      padding:6px 48px;
+      box-shadow:0 10px 18px rgba(37,99,235,.35);
+      pointer-events:none;
     }
-    .footer {
-      margin-top: 30px;
-      font-size: 13px;
-      color: #777;
+    .content{
+      position:relative;
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: clamp(12px, 2vw, 24px);
+      padding: clamp(16px, 2.2vw, 28px);
     }
-    .back-home {
-      display: inline-block;
-      margin-top: 20px;
-      padding: 10px 20px;
-      background: #ff6600;
-      color: white;
-      text-decoration: none;
-      border-radius: 8px;
+    @media (min-width: 900px) and (orientation: landscape){
+      .content{ grid-template-columns: 1.1fr .9fr; align-items:start; }
     }
-  </style>
+    .card{
+      background:#fff;
+      border:1px solid #eee;
+      border-radius:12px;
+      padding: clamp(14px, 1.8vw, 20px);
+    }
+    .row{ display:flex; align-items:center; gap:10px; margin:10px 0; flex-wrap:wrap; }
+    label{ min-width:120px; text-align:right }
+    input,select,button{
+      font-size:16px; padding:10px 12px;
+      border:1px solid #ddd; border-radius:10px; outline:none;
+    }
+    input,select{ min-width:220px; max-width:100% }
+    .btn{ cursor:pointer; background:var(--brand); color:#fff; border:none; padding:12px 18px; border-radius:10px; font-weight:700; }
+    .btn:active{ transform:translateY(1px) }
+    #result{ margin-top:10px }
+    #result span{ display:block; margin:4px 0; color:#c1121f; font-weight:800 }
+    .muted{ color:var(--muted); font-size:12px }
+    .side{ display:grid; align-content:start; gap: clamp(12px, 1.6vw, 18px); }
+    .toolbar{ display:flex; flex-wrap:wrap; gap:10px }
+    .toolbar button{ background:#f2f2f2; color:#222 }
+    .toolbar button:hover{ filter:brightness(.98) }
+    .links{ border-top:1px dashed #ddd; padding-top:12px }
+    .links p{ margin:6px 0 }
+    .share{ border-top:1px dashed #ddd; padding-top:12px }
+    .footer{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:10px; padding: clamp(12px, 2vw, 18px);
+      border-top:1px solid #eee; background:linear-gradient(0deg, #fff, #fff8);
+      backdrop-filter:saturate(1.2) blur(2px);
+    }
+    .footer a.cta{
+      display:inline-flex; align-items:center; gap:8px;
+      background:var(--brand); color:#fff; text-decoration:none;
+      padding:10px 16px; border-radius:10px; font-weight:700;
+    }
+    .badge-offline{
+      display:inline-block; background:var(--danger); color:#fff; font-weight:700;
+      font-size:12px; line-height:1; padding:2px 6px; border-radius:4px;
+      margin-left:6px; vertical-align:middle; box-shadow:0 4px 10px rgba(37,99,235,.25);
+      user-select:none;
+    }
+    @media (max-width: 899px), (orientation: portrait){
+      .row{ flex-direction:column; align-items:stretch }
+      label{ text-align:left; min-width:auto }
+      input,select{ width:100% }
+      .header{ gap:12px }
+      .footer{ position:sticky; bottom:0 }
+    }
+  
+    .hero{
+      background:linear-gradient(135deg, #fff3e6, #fff);
+      border:1px solid #f1e1d3; border-radius:12px; padding: clamp(16px,2.2vw,24px);
+      display:flex; gap:16px; align-items:center;
+    }
+    .hero .hero-text{flex:1}
+    .hero h2{margin:0 0 6px 0; font-size: clamp(18px,2.2vw,24px)}
+    .hero p{margin:0; color:#555}
+    .grid-links{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px}
+    .grid-links a{display:flex; align-items:center; justify-content:center; padding:14px 12px; text-decoration:none; color:#0b63d8; background:#f8f9fb; border:1px solid #e6e9f0; border-radius:12px; font-weight:700}
+    .grid-links a:hover{filter:brightness(.98)}
+        
+    .cta-home{
+      background:#ff4fa3 !important; /* 桃紅色 */
+      color:#fff !important;
+    }
+    .cta-home:hover{
+      filter:brightness(1.05);
+    }
+        
+    /* 桃紅框主頁按鈕 */
+    .home-btn{
+      border:2px solid #ff2d8d;      /* 桃紅框 */
+      color:#c2185b !important;      /* 深桃紅字，提升可讀性 */
+      background:#fff;                /* 白底 */
+      font-weight:800;
+    }
+    .home-btn:hover{
+      background:rgba(255,45,141,0.08); /* 淡桃紅填色 */
+      filter:none;
+    }
+        
+@media (max-width: 768px) {
+    
+}
+
+
+
+
+@media (max-width: 768px) {
+    
+}
+
+</style>
+
+
+<style id="logo-size-unified">
+/* Unified logo size: desktop 300x300, mobile 225x225 */
+.logo{
+  width:300px;
+  height:300px;
+  object-fit:contain;
+}
+@media (max-width:768px){
+  .logo{
+    width:225px;
+    height:225px;
+  }
+}
+</style>
+
 </head>
 <body>
-  <div class="container">
-    <img src="logo.png" alt="契合不動產 LOGO" class="logo">
-    <h2>契合不動產｜快速連結</h2>
-
-    <a href="index.html" class="button">▶️ 開始使用土地複丈規費試算</a>
-    <a href="https://line.me/ti/p/aLynUIRtsJ" class="button" target="_blank">▶️ 加入 LINE 諮詢</a>
-    <a href="https://www.facebook.com/profile.php?id=100082625327420" class="button" target="_blank">▶️ 粉專：契合不動產</a>
-    <a href="https://www.facebook.com/groups/923714991628656" class="button" target="_blank">▶️ 社團：花蓮縣南不動產交流</a>
-    <a href="https://www.instagram.com/hanwu_liang/" class="button" target="_blank">▶️ IG：@hanwu_liang</a>
-    <a href="https://www.youtube.com/@h-ul4237" class="button" target="_blank">▶️ YouTube 頻道</a>
-    <a href="https://www.threads.net/@hanwu_liang" class="button" target="_blank">▶️ Threads</a>
-
-    <div class="footer">
-      聯絡經紀人：0912428605
+  <div class="app">
+    <div class="header">
+      <img class="logo" src="/logo.png" alt="契合不動產 LOGO" loading="eager">
+      <div class="title-wrap">
+        <h1 class="title">快速導覽</h1>
+        <p class="contact">經紀人：林梁祖　｜　電話：<a href="tel:0912428605">0912428605</a></p>
+      </div>
     </div>
-    
-    <a href="install.html" class="button" target="_blank">▶️ 安裝手機桌面教學</a>
-    <a href="index.html" class="back-home">⬅ 回土地複丈首頁</a>
+
+    <div class="content"><section class="card hero" style="grid-column:1/-1"><img src="/logo.png" alt="LOGO" style="width:64px;height:auto"><div class="hero-text"><h2>快速導覽</h2><p>常用連結一次到位，桌機、手機皆擁有最佳瀏覽體驗。</p></div></section><section class="card" style="grid-column:1/-1"><div class="grid-links"><a href="./index.html" class="cta-home" class="home-btn">🏠 回到主頁（試算）</a><a href="https://line.me/ti/p/aLynUIRtsJ" target="_blank" rel="noopener">LINE 諮詢</a><a href="https://www.facebook.com/profile.php?id=100082625327420" target="_blank" rel="noopener">Facebook 粉專</a><a href="https://www.facebook.com/groups/923714991628656" target="_blank" rel="noopener">Facebook 社團</a><a href="https://www.instagram.com/hanwu_liang/" target="_blank" rel="noopener">IG：@hanwu_liang</a><a href="https://www.youtube.com/@h-ul4237" target="_blank" rel="noopener">YouTube 頻道</a><a href="https://www.threads.net/@hanwu_liang" target="_blank" rel="noopener">Threads</a></div></section></div><div class="footer">
+      <span class="muted">© 契合不動產</span>
+      <a class="cta" href="https://line.me/ti/p/aLynUIRtsJ" target="_blank" rel="noopener">立即 LINE 諮詢</a>
+    </div>
   </div>
 </body>
 </html>
