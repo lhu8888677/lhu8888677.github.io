@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>土地複丈規費試算（離線版）</title>
+  <title>土地複丈規費試算（離線版） v1.0.0</title>
 
   <!-- PWA -->
   <link rel="manifest" href="manifest.json">
@@ -34,6 +34,8 @@
     .muted{color:var(--muted); font-size:12px; text-align:center}
     #installWrap{margin-top:12px; display:none;}
     #iosHint,#manualHint{font-size:12px; color:#666; margin-top:8px; display:none;}
+    footer{margin-top:14px; font-size:12px; color:#666}
+    .disc{background:#FF69B4;color:#fff;padding:10px;border-radius:10px;margin-top:10px}
   </style>
 
   <script>
@@ -82,18 +84,17 @@
       <button onclick="clearHistory()">清除歷史紀錄</button>
     </div>
 
-    <!-- 免責聲明（取代原先的測試離線頁面按鈕） -->
     <p><a class="btn" href="disclaimer.html" style="text-decoration:none;">免責聲明</a></p>
 
-    <!-- 加到主螢幕區塊，文字也改為免責聲明 -->
     <div id="installWrap">
       <button id="installBtn" class="btn">加到主螢幕</button>
       <div id="iosHint">免責聲明：本工具僅供參考，實際規費以主管機關或承辦單位公布為準；資料僅在本機端運算與儲存，不會上傳至伺服器；使用造成之任何損失或爭議，提供者概不負責。</div>
       <div id="manualHint">免責聲明：本工具僅供參考，實際規費以主管機關或承辦單位公布為準；資料僅在本機端運算與儲存，不會上傳至伺服器；使用造成之任何損失或爭議，提供者概不負責。</div>
     </div>
 
-    <!-- 頁面底部提示也改成免責聲明 -->
-    <p class="muted">免責聲明：本工具僅供參考，實際規費以主管機關或承辦單位公布為準；資料僅在本機端運算與儲存，不會上傳至伺服器；使用造成之任何損失或爭議，提供者概不負責。</p>
+    <div class="disc">免責聲明：本工具僅供參考，實際規費以主管機關或承辦單位公布為準；資料僅在本機端運算與儲存，不會上傳至伺服器；使用造成之任何損失或爭議，提供者概不負責。</div>
+
+    <footer>v1.0.0 · 2025-08-11 · 離線版 路徑</footer>
   </div>
 
   <script>
@@ -142,7 +143,6 @@
       alert('已清除歷史紀錄');
     }
 
-    // A2HS：仍保留安裝功能，只是文字改為免責聲明
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
     let deferredPrompt = null;
     window.addEventListener('beforeinstallprompt', (e) => {
