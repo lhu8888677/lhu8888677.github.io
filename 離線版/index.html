@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>土地複丈規費試算（離線版）</title>
+  <link rel="manifest" href="./manifest.json">
+  <meta name="theme-color" content="#cc5500">
+  <style>
+    :root { --brand:#cc5500; --muted:#666; --card:#fff; }
+    html,body{height:100%; margin:0}
+    body{font-family:"Microsoft JhengHei",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans TC",sans-serif;background:#f6f6f6;display:flex;align-items:center;justify-content:center;padding:16px}
+    .card{position:relative; width:min(92vw,560px); background:var(--card); border-radius:16px; box-shadow:0 10px 24px rgba(0,0,0,.08); padding:22px 22px 28px}
+    .ribbon{position:absolute; top:14px; right:-42px; transform:rotate(45deg); background:#ff0000; font-size:28px; color:#fff; font-weight:700; padding:6px 48px; box-shadow:0 10px 18px rgba(37,99,235,.35)}
+    .logo-wrap{display:flex; flex-direction:column; align-items:center; gap:6px; margin-top:16px}
+    .logo{width:168px; height:auto}
+    h1{font-size:20px; margin:6px 0 4px 0; letter-spacing:.02em}
+    .contact{color:#0b63d8; font-weight:800; margin:0 0 10px 0}
+    label{display:inline-block; min-width:88px; text-align:right; margin:6px 6px 6px 0}
+    input,select,button{font-size:16px; padding:10px 12px; border:1px solid #ddd; border-radius:10px}
+    input,select{width:240px}
+    .row{display:flex; align-items:center; justify-content:center}
+    .btn{cursor:pointer; background:var(--brand); color:#fff; border:none; padding:10px 16px; border-radius:10px; margin-top:8px}
+    .btn:active{transform:translateY(1px)}
+    .toolbar{display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin:10px 0 6px}
+    #result{margin:14px 0; text-align:center}
+    #result span{display:block; margin:2px 0}
+    .fee{color:#c1121f; font-weight:800}
+    .muted{color:var(--muted); font-size:12px; text-align:center}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="ribbon">離線版</div>
+    <div class="logo-wrap">
+      <img class="logo" src="logo.png" alt="LOGO">
+      <h1>土地複丈規費試算（離線版）</h1>
+      <p class="contact">經紀人：林梁祖　｜　電話：0912428605</p>
+    </div>
+
+    <div class="row">
+      <label for="type">複丈類型：</label>
+      <select id="type">
+        <option value="鑑界複丈">鑑界複丈</option>
+        <option value="分割等">分割、調整等</option>
+      </select>
+    </div>
+
+    <div class="row">
+      <label for="area">土地面積（㎡）：</label>
+      <input type="number" id="area" value="100" min="0" step="1">
+    </div>
+
+    <div class="row">
+      <label for="units">施測單位數：</label>
+      <input type="number" id="units" value="5" min="0" step="1">
+    </div>
+
+    <div class="row">
+      <button class="btn" onclick="calculate()">試算</button>
+    </div>
+
+    <div id="result"></div>
+
+    <div class="toolbar">
+      <button onclick="exportTXT()">匯出 TXT</button>
+      <button onclick="window.print()">列印本頁</button>
+      <button onclick="showHistory()">歷史紀錄</button>
+      <button onclick="clearHistory()">清除歷史紀錄</button>
+    </div>
+
+    <p class="muted">首次開啟後會快取；之後可離線使用（不連網亦能開啟）。</p>
+  </div>
+
+  <script>
+    function getBase(type, area){
+      if(area < 200) return (type === "鑑界複丈") ? 2500 : 1500;
+      if(area < 1000) return (type === "鑑界複丈") ? 3000 : 2000;
+      if(area < 10000) return (type === "鑑界複丈") ? 3500 : 2500;
+      return (type === "鑑界複丈") ? 4000 : 3000;
+    }
+
+    function calculate(){
+      const area = Math.max(0, parseFloat(document.getElementById('area').value) || 0);
+      const unitsRaw = Math.max(0, parseInt(document.getElementById('units').value) || 0);
+      const type = document.getElementById('type').value;
+
+      const base = getBase(type, area);
+
+      let unitRate, unitCount;
+      if(type === "鑑界複丈"){
+        unitRate = 1000;
+        unitCount = Math.ceil(unitsRaw / 5); // 5點一單位，未滿5以5計
+      }else{
+        unitRate = 500;
+        unitCount = unitsRaw; // 分割/調整：每線段一單位
+      }
+      const unitFee = unitRate * unitCount;
+      const total = base + unitFee;
+
+      const result = document.getElementById('result');
+      result.innerHTML = [
+        `<span>基本費：<span class="fee">${base.toLocaleString()}</span> 元</span>`,
+        `<span>施測費（<b>${unitCount}</b> 單位 × ${unitRate.toLocaleString()} 元）：<span class="fee">${unitFee.toLocaleString()}</span> 元</span>`,
+        `<span>合計：<span class="fee" style="font-size:20px">${total.toLocaleString()}</span> 元</span>`
+      ].join("");
+
+      let h = JSON.parse(localStorage.getItem("calcHistory") || "[]");
+      h.unshift(`類型：${type}｜面積：${area}㎡｜單位：${unitsRaw}（計費：${unitCount}）｜合計：${total}元`);
+      if(h.length > 12) h = h.slice(0,12);
+      localStorage.setItem("calcHistory", JSON.stringify(h));
+    }
+
+    function exportTXT(){
+      const t = document.getElementById('result').innerText || '尚未試算';
+      const blob = new Blob([t], {type:'text/plain'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = '複丈試算結果.txt';
+      document.body.appendChild(a); a.click();
+      document.body.removeChild(a); URL.revokeObjectURL(url);
+    }
+
+    function showHistory(){
+      const h = JSON.parse(localStorage.getItem("calcHistory") || "[]");
+      alert(h.length ? ('歷史紀錄\n' + h.join('\n')) : '尚無紀錄');
+    }
+
+    function clearHistory(){
+      localStorage.removeItem("calcHistory");
+      alert('已清除歷史紀錄');
+    }
+
+    if('serviceWorker' in navigator){
+      navigator.serviceWorker.register('./sw.js', { scope: './' });
+    }
+  </script>
+</body>
+</html>
