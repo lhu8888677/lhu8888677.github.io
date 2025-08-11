@@ -32,13 +32,11 @@
     #result span{display:block; margin:2px 0}
     .fee{color:#c1121f; font-weight:800}
     .muted{color:var(--muted); font-size:12px; text-align:center}
-    /* A2HS */
     #installWrap{margin-top:12px; display:none;}
     #iosHint,#manualHint{font-size:12px; color:#666; margin-top:8px; display:none;}
   </style>
 
   <script>
-    // 註冊 SW（同資料夾）
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./sw.js', { scope: './' }).catch(()=>{});
     }
@@ -84,17 +82,18 @@
       <button onclick="clearHistory()">清除歷史紀錄</button>
     </div>
 
-    <!-- 測試離線頁面 -->
-    <p><a class="btn" href="offline.html" style="text-decoration:none;">測試離線頁面</a></p>
+    <!-- 免責聲明（取代原先的測試離線頁面按鈕） -->
+    <p><a class="btn" href="disclaimer.html" style="text-decoration:none;">免責聲明</a></p>
 
-    <!-- 加到主螢幕 -->
+    <!-- 加到主螢幕區塊，文字也改為免責聲明 -->
     <div id="installWrap">
       <button id="installBtn" class="btn">加到主螢幕</button>
-      <div id="iosHint">iPhone：請在 Safari 點「分享」→「加到主畫面」</div>
-      <div id="manualHint">桌機 Chrome：點網址列右側的「安裝」圖示（在★旁），或瀏覽器功能表 → 安裝應用程式。</div>
+      <div id="iosHint">免責聲明：本工具僅供參考，實際規費以主管機關或承辦單位公布為準；資料僅在本機端運算與儲存，不會上傳至伺服器；使用造成之任何損失或爭議，提供者概不負責。</div>
+      <div id="manualHint">免責聲明：本工具僅供參考，實際規費以主管機關或承辦單位公布為準；資料僅在本機端運算與儲存，不會上傳至伺服器；使用造成之任何損失或爭議，提供者概不負責。</div>
     </div>
 
-    <p class="muted">首次開啟後會快取；之後可離線使用（不連網亦能開啟）。</p>
+    <!-- 頁面底部提示也改成免責聲明 -->
+    <p class="muted">免責聲明：本工具僅供參考，實際規費以主管機關或承辦單位公布為準；資料僅在本機端運算與儲存，不會上傳至伺服器；使用造成之任何損失或爭議，提供者概不負責。</p>
   </div>
 
   <script>
@@ -143,9 +142,8 @@
       alert('已清除歷史紀錄');
     }
 
-    // A2HS：穩定提示
+    // A2HS：仍保留安裝功能，只是文字改為免責聲明
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
-    const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
     let deferredPrompt = null;
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
@@ -156,9 +154,8 @@
       }
     });
     setTimeout(() => {
-      if (!isStandalone && !deferredPrompt && !isIOS) {
+      if (!isStandalone && !deferredPrompt) {
         document.getElementById('installWrap').style.display='block';
-        document.getElementById('manualHint').style.display='block';
         const b = document.getElementById('installBtn'); if (b) b.style.display='none';
       }
     }, 2500);
@@ -168,11 +165,6 @@
       await deferredPrompt.userChoice;
       deferredPrompt = null;
     });
-    if (isIOS && !isStandalone) {
-      document.getElementById('installWrap').style.display='block';
-      document.getElementById('iosHint').style.display='block';
-      const b = document.getElementById('installBtn'); if (b) b.style.display='none';
-    }
     window.addEventListener('appinstalled', () => {
       document.getElementById('installWrap').style.display='none';
       alert('已安裝到主螢幕！');
