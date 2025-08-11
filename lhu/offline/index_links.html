@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>下載中心｜土地複丈規費試算（離線版）</title>
+  <style>
+    body{font-family:"Microsoft JhengHei",system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans TC",sans-serif;background:#f6f6f6;margin:0;padding:24px}
+    .wrap{max-width:900px;margin:0 auto;background:#fff;border-radius:16px;box-shadow:0 10px 24px rgba(0,0,0,.08);padding:24px}
+    h1{margin:0 0 12px 0}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:16px}
+    .card{border:1px solid #eee;border-radius:12px;padding:16px}
+    .btn{display:inline-block;background:#cc5500;color:#fff;padding:10px 16px;border-radius:10px;text-decoration:none}
+    .muted{color:#666;font-size:12px;margin-top:6px}
+    code{background:#f1f1f1;padding:2px 6px;border-radius:6px}
+    footer{margin-top:16px;color:#666;font-size:12px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>下載中心｜土地複丈規費試算（離線版）</h1>
+    <p>建議從 <b>GitHub Releases</b> 下載：檔案唯讀、可版本控管。把下面兩個下載連結改成你的 Release 連結再發佈。</p>
+
+    <div class="grid">
+      <div class="card">
+        <h3>/lhu/offline/ 版</h3>
+        <p><a class="btn" href="__RELEASE_LINK_OFFLINE__">下載 zip</a></p>
+        <p class="muted">版本：v1.0.0（2025-08-11） · 路徑：/lhu/offline/</p>
+        <p class="muted">SHA-256：貼上你在 Release 中的雜湊值</p>
+      </div>
+      <div class="card">
+        <h3>/lhu/離線版/ 版</h3>
+        <p><a class="btn" href="__RELEASE_LINK_ZH__">下載 zip</a></p>
+        <p class="muted">版本：v1.0.0（2025-08-11） · 路徑：/lhu/離線版/</p>
+        <p class="muted">SHA-256：貼上你在 Release 中的雜湊值</p>
+      </div>
+    </div>
+
+    <h3>如何驗證檔案（選擇性）</h3>
+    <p>Windows PowerShell：<code>Get-FileHash .\下載的檔案.zip -Algorithm SHA256</code><br>
+       macOS/Linux：<code>shasum -a 256 下載的檔案.zip</code></p>
+
+    <footer>v1.0.0 · 2025-08-11</footer>
+  </div>
+</body>
+</html>
