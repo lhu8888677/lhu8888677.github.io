@@ -7,15 +7,24 @@
   <link rel="manifest" href="manifest.json">
   <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js').then(() => {
-        console.log('Service Worker 註冊成功');
-      });
+      navigator.serviceWorker.register('./sw.js', { scope: './' })
+        .catch(err => console.error('SW 註冊失敗:', err));
     }
   </script>
   <style>
     body { font-family: Arial, sans-serif; text-align: center; margin: 0; padding: 20px; }
     .ribbon { background: red; color: white; padding: 5px 10px; position: absolute; top: 10px; left: 10px; font-weight: bold; }
     .logo { max-width: 150px; margin-top: 20px; }
+    .btn {
+      display: inline-block;
+      padding: 8px 16px;
+      background-color: #f90;
+      color: #fff;
+      border-radius: 4px;
+      text-decoration: none;
+      margin: 4px;
+    }
+    .btn:hover { background-color: #c60; }
   </style>
 </head>
 <body>
@@ -23,21 +32,58 @@
   <img class="logo" src="icons/logo.png" alt="LOGO">
   <h1>土地複丈規費試算（離線版）</h1>
   <p>經紀人：林梁祖　｜　電話：0912428605</p>
-  <p><button onclick="installPWA()">📲 加到主螢幕</button></p>
+
+  <!-- A：測試離線頁面按鈕 -->
+  <p><a class="btn" href="offline.html" style="text-decoration:none;">測試離線頁面</a></p>
+
+  <!-- B：加到主螢幕區塊 -->
+  <div id="installWrap" style="margin-top:12px; display:none;">
+    <button id="installBtn" class="btn">加到主螢幕</button>
+    <div id="iosHint" style="font-size:12px;color:#666;margin-top:8px;display:none;">
+      iPhone：請在 Safari 點「分享」→「加到主畫面」
+    </div>
+    <div id="manualHint" style="font-size:12px;color:#666;margin-top:8px;display:none;">
+      桌機 Chrome：請點網址列右側的「安裝」圖示（在★旁邊），或瀏覽器功能表 → 安裝應用程式。
+    </div>
+  </div>
+
   <script>
-    let deferredPrompt;
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+    const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    let deferredPrompt = null;
+
+    // 捕捉可安裝事件
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
+      document.getElementById('installWrap').style.display = 'block';
     });
-    function installPWA() {
+
+    // 綁定按鈕事件
+    document.getElementById('installBtn').addEventListener('click', async () => {
       if (deferredPrompt) {
         deferredPrompt.prompt();
-        deferredPrompt.userChoice.then(() => { deferredPrompt = null; });
+        await deferredPrompt.userChoice;
+        deferredPrompt = null;
       } else {
-        alert("請使用瀏覽器選單手動加入主螢幕");
+        if (isIOS) {
+          document.getElementById('iosHint').style.display = 'block';
+        } else {
+          document.getElementById('manualHint').style.display = 'block';
+        }
       }
+    });
+
+    // iOS 預設顯示提示
+    if (isIOS && !isStandalone) {
+      document.getElementById('installWrap').style.display = 'block';
+      document.getElementById('iosHint').style.display = 'block';
     }
+
+    // 安裝完成
+    window.addEventListener('appinstalled', () => {
+      alert('已安裝到主螢幕！');
+    });
   </script>
 </body>
 </html>
